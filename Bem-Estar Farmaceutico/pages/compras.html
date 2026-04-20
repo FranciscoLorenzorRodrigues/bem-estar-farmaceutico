@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bem Estar Farmacêutico - Produtos</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+    <header class="header">
+        <img src="../imagens/Logo.png" class="logo" alt="Logo Bem Estar">
+
+        <input type="text" placeholder="Pesquisar" class="search">
+
+        <div class="icons">
+            <span class="user">USUÁRIO1234</span>
+            <span>❓</span>
+            <span>🔔</span>
+            <span>🛒</span>
+        </div>
+    </header>
+
+    <nav class="menu">
+        <a href="#">🏠 Início</a>
+        <a href="#">💲 Promoções</a>
+        <a href="#">🛍️ Compra Geral</a>
+        <a href="#">📄 Histórico de Compras</a>
+    </nav>
+
+    <div class="layout-produtos">
+        
+        <aside class="filtro-lateral">
+            <ul class="lista-filtros">
+                <li>🏆 Mais vendidos</li>
+                <li>💵 Desconto</li>
+                <li>⬇️ Preço decrescente</li>
+                <li>⬆️ Preço crescente</li>
+                <li>↗️ Nome em ordem crescente</li>
+                <li>↙️ Nome em ordem decrescente</li>
+            </ul>
+
+            <div class="caixa-selects">
+                <select><option>Laboratório</option></select>
+                <select><option>Princípio Ativo</option></select>
+            </div>
+
+            <div class="faixa-preco">
+                <p>Faixa de preço</p>
+                <div class="inputs-preco">
+                    <input type="text" value="0,00">
+                    <input type="text" value="1.000,00">
+                    <button class="btn-ok-filtro">OK</button>
+                </div>
+                <div class="barra-slider"></div>
+            </div>
+        </aside>
+
+       <main class="grid-produtos">
+            
+            <div class="card-produto-novo">
+                <div class="card-img-box">
+                    <img src="../imagens/curativo 1.png" alt="Produto 1">
+                </div>
+                <p class="card-titulo">Produto Exemplo 1</p>
+                <span class="card-preco">R$ 21,59</span>
+                <button class="btn-comprar">COMPRAR</button>
+            </div>
+
+            <div class="card-produto-novo">
+                <div class="card-img-box">
+                    <img src="../imagens/Novalgina 1.png" alt="Produto 2">
+                </div>
+                <p class="card-titulo">Produto Exemplo 2</p>
+                <span class="card-preco">R$ 33,99</span>
+                <button class="btn-comprar">COMPRAR</button>
+            </div>
+
+            <div class="card-produto-novo">
+                <div class="card-img-box">
+                    <img src="../imagens/tylenol 1.png" alt="Produto 3">
+                </div>
+                <p class="card-titulo">Produto Exemplo 3</p>
+                <span class="card-preco">R$ 59,79</span>
+                <button class="btn-comprar">COMPRAR</button>
+            </div>
+</body>
+</html>
