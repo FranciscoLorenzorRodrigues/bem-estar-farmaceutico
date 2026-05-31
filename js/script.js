@@ -24,7 +24,7 @@ function adicionarAoCarrinho(nome, preco, imagem) {
     
     localStorage.setItem('itensCarrinho', JSON.stringify(carrinho));
     alert(`${nome} foi adicionado ao carrinho!`);
-    atualizarContadorCarrinho();
+    window.location.href = "carrinho.html";
 }
 
 // LÓGICA POR PÁGINA 
