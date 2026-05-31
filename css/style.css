@@ -8,7 +8,7 @@
 body {
     background: #f1f3f4;
     font-family: Arial, sans-serif;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 /* TOPO */
@@ -26,25 +26,28 @@ body {
 }
 
 /* CONTAINER PRINCIPAL */
-.container {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding-top: 80px;
-    height: calc(100vh - 70px);
+.container{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:40px 20px;
+    min-height:100vh;
 }
-.card-principal {
-    display: flex;
-    background-color: #3f9c8c;
-    border-radius: 15px;
-    padding: 30px;
+.card-principal{
+    display:flex;
+    background-color:#3f9c8c;
+    border-radius:15px;
+    padding:30px;
+
+    width:90%;
+    max-width:950px;
 }
 
 /* LADO ESQUERDO */
 .lado-esquerdo {
     background-color: #3f9c8c;
-    width: 400px;
-    height: 400px;
+    width:45%;
+    min-height:400px;
     border-radius: 15px 0 0 15px;
 
     display: flex;
