@@ -1,14 +1,16 @@
+
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 
 from database.database import get_session
 from database.models import Cliente
 from schemas.customer import CustomerSchema, LoginSchema
-from services.security import hash_password, verify_password
 
+from services.security import (hash_password,verify_password,criar_token,validar_token)
 
 auth_router = APIRouter(prefix="/auth",tags=["auth"])
-
+seguranca = HTTPBearer()
 
 @auth_router.post("/register")
 async def register(customer_schema: CustomerSchema,session: Session = Depends(get_session)):
@@ -58,4 +60,32 @@ async def login(login_schema: LoginSchema,session: Session = Depends(get_session
     if not senha_correta:
         raise HTTPException(status_code=401,detail="E-mail ou senha incorretos")
 
-    return { "mensagem": "Login efetuado com sucesso"}
+   
+    token = criar_token(cliente.id_cliente)
+
+    return {
+        "mensagem": "Login efetuado com sucesso",
+        "access_token": token,
+        "token_type": "bearer"
+    }
+
+
+@auth_router.get("/me")
+async def obter_usuario(
+    credenciais: HTTPAuthorizationCredentials = Depends(seguranca)
+):
+    token = credenciais.credentials
+
+    id_cliente = validar_token(token)
+
+    if id_cliente is None:
+        raise HTTPException(
+            status_code=401,
+            detail="Token inválido ou expirado"
+        )
+
+    return {
+        "mensagem": "Usuário autenticado",
+        "id_cliente": id_cliente
+    }
+
