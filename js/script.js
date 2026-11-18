@@ -1,32 +1,53 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     console.log("Sistema Bem Estar Farmacêutico Iniciado!");
 
-    // Identifica em qual página estamos pela URL ou por um elemento único
     const path = window.location.pathname;
 
-    
-if (path.includes("login.html")) {
-    configurarLogin();
+    // Página de login não exige autenticação
+    if (path.includes("login.html")) {
+        configurarLogin();
+        return;
+    }
 
-} else if (path.includes("home.html")) {
-    verificarAutenticacao();
-    configurarListaProdutos();
+    // Páginas que exigem autenticação
+    const paginasProtegidas = [
+        "home.html",
+        "compras.html",
+        "carrinho.html",
+        "pagamento.html"
+    ];
 
-}  else if (path.includes("compras.html")) {
-    buscarMedicamentos();
-    // configurarListaProdutos();
+    const paginaProtegida = paginasProtegidas.some(pagina =>
+        path.includes(pagina)
+    );
 
-} else if (path.includes("carrinho.html")) {
-    renderizarCarrinho();
+    // Verifica a autenticação antes de carregar a página
+    if (paginaProtegida) {
+        const autenticado = await verificarAutenticacao();
 
-} else if (path.includes("pagamento.html")) {
+        if (!autenticado) {
+            return;
+        }
+    }
+
+    // Configuração de cada página
+    if (path.includes("home.html")) {
+        configurarListaProdutos();
+
+    } else if (path.includes("compras.html")) {
+        buscarMedicamentos();
+
+    } else if (path.includes("carrinho.html")) {
+        renderizarCarrinho();
+
+    } else if (path.includes("pagamento.html")) {
+    atualizarValoresPagamento();
+
     const botao = document.querySelector(".btn-confirmar-final");
+
     botao.addEventListener("click", finalizarPedido);
 }
-
-
 });
-
 // LÓGICA DE INTEGRAÇÃO 
 
 // Função para salvar no LocalStorage (isso conecta as telas)
@@ -194,7 +215,7 @@ async function verificarAutenticacao() {
 
     if (!token) {
         window.location.href = "login.html";
-        return;
+        return false;
     }
 
     try {
@@ -216,15 +237,17 @@ async function verificarAutenticacao() {
 
         console.log("Usuário autenticado:", usuario.id_cliente);
 
-    
-        } catch (erro) {
+        return true;
+
+    } catch (erro) {
         console.error("Erro na autenticação:", erro);
-        alert("Erro na autenticação: " + erro.message);
 
         sessionStorage.removeItem("access_token");
-        window.location.href = "login.html";
-        }
 
+        window.location.href = "login.html";
+
+        return false;
+    }
 }
 
 
@@ -385,19 +408,94 @@ async function finalizarPedido() {
 
         localStorage.removeItem("itensCarrinho");
 
-        alert(
-            `Pedido #${dados.id_pedido} criado com sucesso!\n` +
-            `Valor dos medicamentos: R$ ${dados.valor_total.toFixed(2)}`
-        );
+        botao.disabled = true;
+        botao.textContent = "Pedido confirmado";
 
-        window.location.href = "home.html";
+        mostrarModalPedido(dados);
+
+        return;
 
     } catch (erro) {
         alert("Erro: " + erro.message);
     } finally {
-        botao.disabled = false;
-        botao.textContent = "Confirmar pedido";
+        
+        if (localStorage.getItem("itensCarrinho")) {
+    botao.disabled = false;
+    botao.textContent = "Confirmar pedido";
+}
     }
+}
+
+
+function mostrarModalPedido(dados) {
+    const overlay = document.createElement("div");
+    overlay.className = "modal-pedido-overlay";
+
+    const modal = document.createElement("div");
+    modal.className = "modal-pedido";
+
+    const icone = document.createElement("div");
+    icone.className = "modal-pedido-icone";
+    icone.textContent = "✓";
+
+    const titulo = document.createElement("h2");
+    titulo.textContent = "Pedido realizado com sucesso!";
+
+    const descricao = document.createElement("p");
+    descricao.textContent = "Sua solicitação foi registrada.";
+
+    const numero = document.createElement("p");
+    numero.textContent = `Pedido: #${dados.id_pedido}`;
+
+    const valor = document.createElement("p");
+    valor.textContent = `Total: ${Number(dados.valor_total).toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL"
+    })}`;
+
+    const botao = document.createElement("button");
+    botao.textContent = "Continuar comprando";
+    botao.onclick = () => {
+    window.location.href = "home.html";
+    };
+
+    modal.append(icone, titulo, descricao, numero, valor, botao);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+}
+
+function atualizarValoresPagamento() {
+    const carrinho = JSON.parse(
+        localStorage.getItem("itensCarrinho")
+    ) || [];
+
+    const subtotal = carrinho.reduce((soma, item) => {
+        return soma + Number(item.preco);
+    }, 0);
+
+    const taxaEntrega = 5.00;
+    const taxaServico = 0.99;
+
+    const total = subtotal + taxaEntrega + taxaServico;
+
+    const formatarMoeda = valor => {
+        return valor.toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL"
+        });
+    };
+
+    document.getElementById("valor-subtotal").textContent =
+        formatarMoeda(subtotal);
+
+    document.getElementById("taxa-entrega").textContent =
+        formatarMoeda(taxaEntrega);
+
+    document.getElementById("taxa-servico").textContent =
+        formatarMoeda(taxaServico);
+
+    document.getElementById("valor-total").textContent =
+        formatarMoeda(total);
 }
 
 

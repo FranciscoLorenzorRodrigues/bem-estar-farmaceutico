@@ -1,11 +1,14 @@
-
 import os
+from pathlib import Path
 from datetime import datetime, timedelta, timezone
 
 import jwt
 from dotenv import load_dotenv
 from jwt.exceptions import InvalidTokenError
 from passlib.context import CryptContext
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
 
 load_dotenv()
 

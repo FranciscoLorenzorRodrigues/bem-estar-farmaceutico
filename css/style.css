@@ -804,3 +804,59 @@ body {
 .btn-confirmar-final:hover {
     transform: scale(1.02);
 }
+
+
+.modal-pedido-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-pedido {
+    background: white;
+    width: 90%;
+    max-width: 400px;
+    padding: 30px;
+    border-radius: 18px;
+    text-align: center;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-pedido-icone {
+    background: #3f9c8c;
+    color: white;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    font-size: 35px;
+    line-height: 55px;
+    margin: 0 auto 15px;
+}
+
+.modal-pedido h2 {
+    color: #3f9c8c;
+    font-size: 21px;
+}
+
+.modal-pedido p {
+    color: #444;
+}
+
+.modal-pedido button {
+    background: #3f9c8c;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 24px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+.modal-pedido button:hover {
+    background: #327f72;
+}

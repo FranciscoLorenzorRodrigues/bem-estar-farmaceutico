@@ -1,5 +1,4 @@
 
-from datetime import datetime, timezone
 from decimal import Decimal
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -11,7 +10,6 @@ from database.models import (
     Cliente,
     Farmacia,
     Medicamento,
-    Estoque,
     Pedido,
     PedidoMedicamento
 )
@@ -79,40 +77,6 @@ def finalizar_compra(
                     status_code=400,
                     detail="Medicamento controlado exige validação de receita"
                 )
-
-            lotes = (
-                session.query(Estoque)
-                .filter(
-                    Estoque.id_farmacia == dados.id_farmacia,
-                    Estoque.id_medicamento == id_medicamento,
-                    Estoque.estoque > 0,
-                    Estoque.data_validade >= datetime.now(timezone.utc).date()
-                )
-                .order_by(
-                    Estoque.data_validade,
-                    Estoque.id_estoque
-                )
-                .with_for_update()
-                .all()
-            )
-
-            disponivel = sum(lote.estoque for lote in lotes)
-
-            if disponivel < quantidade:
-                raise HTTPException(
-                    status_code=400,
-                    detail=f"Estoque insuficiente para {medicamento.nome}"
-                )
-
-            restante = quantidade
-
-            for lote in lotes:
-                retirar = min(lote.estoque, restante)
-                lote.estoque -= retirar
-                restante -= retirar
-
-                if restante == 0:
-                    break
 
             preco = medicamento.preco
             total += preco * quantidade
